@@ -22,7 +22,7 @@ body::before {
   background-image: url('goog.jpg');
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  opacity: 0.05;
+  opacity: 0.2;
   z-index: -1;
   pointer-events: none;
 }
@@ -36,21 +36,27 @@ body::before {
   gap: 8px;
 }
 
-button {
+button,
+.btn {
   background: #222;
   color: #eee;
   border: 1px solid #444;
   padding: 6px 12px;
   font-family: monospace;
   font-size: 13px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
   cursor: pointer;
 }
 
-button:hover {
+button:hover,
+.btn:hover {
   background: #333;
 }
 
-button:active {
+button:active,
+.btn:active {
   background: #111;
 }
 
