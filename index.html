@@ -33,6 +33,18 @@
     let pointerY = window.innerHeight / 3;
     let dragVelX = 0;
     let dragVelY = 0;
+    let lastMeowTime = 0;
+
+    function playMeow(impactSpeed = 10) {
+      const now = performance.now();
+      if (now - lastMeowTime < 90) return;
+      lastMeowTime = now;
+
+      const audio = new Audio('meow.mp3');
+      audio.volume = Math.min(1, Math.max(0.2, impactSpeed / 22));
+      audio.playbackRate = 0.88 + Math.random() * 0.28;
+      audio.play().catch(() => {});
+    }
 
     function createGoog(x, y) {
       const el = document.createElement('img');
@@ -181,6 +193,9 @@
         if (g.vy < 0) g.vy = Math.abs(g.vy) * (jumpingEnabled ? bounce : 0.2);
       } else if (g.y + g.size > h) {
         g.y = h - g.size;
+        if (g.vy > 3.5) {
+          playMeow(g.vy);
+        }
         if (jumpingEnabled) {
           const jumpForce = Math.random() * 14 + 10;
           g.vy = -Math.max(Math.abs(g.vy) * bounce, jumpForce);
@@ -256,6 +271,9 @@
               const velAlongNormal = rvx * nx + rvy * ny;
 
               if (velAlongNormal < 0) {
+                if (iter === 0 && velAlongNormal < -8) {
+                  playMeow(-velAlongNormal);
+                }
                 const restitution = !jumpingEnabled && Math.abs(velAlongNormal) < 2.5 ? 0 : (jumpingEnabled ? 0.72 : 0.15);
                 const impulse = (-(1 + restitution) * velAlongNormal) / (1 / a.mass + 1 / b.mass);
                 const impulseX = impulse * nx;
@@ -323,10 +341,6 @@
     });
 
     document.getElementById('jumpBtn').addEventListener('click', () => {
-      if (!jumpingEnabled) {
-        jumpingEnabled = true;
-        document.getElementById('toggleJumpBtn').textContent = 'jumping: on';
-      }
       for (const g of googs) {
         if (!g.isDragging) {
           g.vy = -(Math.random() * 18 + 14);
